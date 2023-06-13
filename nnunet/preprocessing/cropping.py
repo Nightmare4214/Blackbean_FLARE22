@@ -163,8 +163,8 @@ class ImageCropper(object):
         # properties['classes'] = np.unique(seg)
         # seg[seg < -1] = 0
         properties["size_after_cropping"] = data[0].shape
-        # return data, seg, properties
-        return data, properties
+        return data, seg, properties
+        # return data, properties
 
     @staticmethod
     def crop_from_list_of_files(data_files, seg_file=None):

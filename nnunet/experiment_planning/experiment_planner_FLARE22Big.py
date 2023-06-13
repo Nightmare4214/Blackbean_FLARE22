@@ -28,6 +28,7 @@ class ExperimentPlanner3D_FLARE22Big(ExperimentPlanner):
     We also increase the base_num_features to 32. This is solely because mixed precision training with 3D convs and
     amp is A LOT faster if the number of filters is divisible by 8
     """
+
     def __init__(self, folder_with_cropped_data, preprocessed_output_folder):
         super(ExperimentPlanner3D_FLARE22Big, self).__init__(folder_with_cropped_data, preprocessed_output_folder)
         self.data_identifier = "nnUNetData_plans_FLARE22Big"
@@ -37,7 +38,7 @@ class ExperimentPlanner3D_FLARE22Big(ExperimentPlanner):
 
     def get_target_spacing(self):
         # simply return the desired spacing as np.array
-        return np.array([2.5, 0.8, 0.8]) # make sure this is float!!!! Not int!
+        return np.array([2.5, 0.8, 0.8])  # make sure this is float!!!! Not int!
 
     def get_properties_for_stage(self, current_spacing, original_spacing, original_shape, num_cases,
                                  num_modalities, num_classes):
@@ -69,9 +70,9 @@ class ExperimentPlanner3D_FLARE22Big(ExperimentPlanner):
         input_patch_size = [min(i, j) for i, j in zip(input_patch_size, new_median_shape)]
 
         network_num_pool_per_axis, pool_op_kernel_sizes, conv_kernel_sizes, new_shp, \
-        shape_must_be_divisible_by = get_pool_and_conv_props(current_spacing, input_patch_size,
-                                                             self.unet_featuremap_min_edge_length,
-                                                             self.unet_max_numpool)
+            shape_must_be_divisible_by = get_pool_and_conv_props(current_spacing, input_patch_size,
+                                                                 self.unet_featuremap_min_edge_length,
+                                                                 self.unet_max_numpool)
 
         # we compute as if we were using only 30 feature maps. We can do that because fp16 training is the standard
         # now. That frees up some space. The decision to go with 32 is solely due to the speedup we get (non-multiples
@@ -97,18 +98,18 @@ class ExperimentPlanner3D_FLARE22Big(ExperimentPlanner):
 
             # we have to recompute numpool now:
             network_num_pool_per_axis, pool_op_kernel_sizes, conv_kernel_sizes, new_shp, \
-            shape_must_be_divisible_by = get_pool_and_conv_props(current_spacing, new_shp,
-                                                                 self.unet_featuremap_min_edge_length,
-                                                                 self.unet_max_numpool,
-                                                                 )
+                shape_must_be_divisible_by = get_pool_and_conv_props(current_spacing, new_shp,
+                                                                     self.unet_featuremap_min_edge_length,
+                                                                     self.unet_max_numpool,
+                                                                     )
 
             here = Generic_UNet.compute_approx_vram_consumption(new_shp, network_num_pool_per_axis,
                                                                 self.unet_base_num_features,
                                                                 self.unet_max_num_filters, num_modalities,
                                                                 num_classes, pool_op_kernel_sizes,
                                                                 conv_per_stage=self.conv_per_stage)
-            #print(new_shp)
-        #print(here, ref)
+            # print(new_shp)
+        # print(here, ref)
 
         input_patch_size = new_shp
 
@@ -124,8 +125,8 @@ class ExperimentPlanner3D_FLARE22Big(ExperimentPlanner):
         do_dummy_2D_data_aug = (max(input_patch_size) / input_patch_size[
             0]) > self.anisotropy_threshold
 
-        conv_kernel_sizes = [[1,3,3], [3,3,3], [3,3,3], [3,3,3], [3,3,3], [3,3,3]]
-        pool_op_kernel_sizes = [[1,2,2], [2,2,2], [2,2,2],[2,2,2],[1,2,2]]
+        conv_kernel_sizes = [[1, 3, 3], [3, 3, 3], [3, 3, 3], [3, 3, 3], [3, 3, 3], [3, 3, 3]]
+        pool_op_kernel_sizes = [[1, 2, 2], [2, 2, 2], [2, 2, 2], [2, 2, 2], [1, 2, 2]]
         input_patch_size = [48, 224, 224]
         plan = {
             'batch_size': batch_size,

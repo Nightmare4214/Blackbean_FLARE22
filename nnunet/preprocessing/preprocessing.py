@@ -321,15 +321,15 @@ class GenericPreprocessor(object):
                     std = data[c].std()
                     # print(data[c].shape, data[c].dtype, mn, std)
                     data[c] = (data[c] - mn) / (std + 1e-8)
-        # return data, seg, properties
-        return data, properties
+        return data, seg, properties
+        # return data, properties
 
     def preprocess_test_case(self, data_files, target_spacing, seg_file=None, force_separate_z=True): # 改为 True
         data, properties = ImageCropper.crop_from_list_of_files(data_files, seg_file)
         data = data.transpose((0, *[i + 1 for i in self.transpose_forward]))
         # seg = seg.transpose((0, *[i + 1 for i in self.transpose_forward]))
         seg = None
-        data,  properties = self.resample_and_normalize(data, target_spacing, properties, seg,
+        data, seg, properties = self.resample_and_normalize(data, target_spacing, properties, seg,
                                                             force_separate_z=force_separate_z)
         return data.astype(np.float32), seg, properties
 
